@@ -123,3 +123,31 @@ def moviereview_list_view(request):
     moviereview = Movie.objects.all()
     data = MovieReviewSerializer(moviereview, many=True).data
     return Response(data=data)
+
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
+@api_view(['POST'])
+def authorization(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            try:
+                token = Token.objects.get(user=user)
+            except Token.DoesNotExist:
+                token = Token.objects.create(user=user)
+            return Response(data={'key': token.key})
+        return Response(data={'errors': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+from django.contrib.auth.models import User
+
+@api_view(['POST'])
+def registration(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        User.objects.create_user(username=username, password=password)
+        return Response(data={'message': 'User crated'}, status=status.HTTP_201_CREATED)
+
