@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'movie_app',
     'rest_framework.authtoken',
+    'mein',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES':[
